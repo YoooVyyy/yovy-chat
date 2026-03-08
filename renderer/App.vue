@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { NConfigProvider } from 'naive-ui';
 import TitleBar from '@renderer/components/TitleBar.vue';
+import DragWindow from '@renderer/components/DragWindow.vue';
 
 </script>
 <template>
@@ -9,7 +10,10 @@ import TitleBar from '@renderer/components/TitleBar.vue';
       Aside
     </aside>
     <div class="flex-auto">
-      <TitleBar title="Yovy Chat" />
+      <TitleBar title="Yovy Chat">
+        <DragWindow class="w-full">
+        </DragWindow>
+      </TitleBar>
       Main
     </div>
   </NConfigProvider>
