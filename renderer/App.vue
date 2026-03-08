@@ -3,6 +3,11 @@ import { NConfigProvider } from 'naive-ui';
 import TitleBar from '@renderer/components/TitleBar.vue';
 import DragWindow from '@renderer/components/DragWindow.vue';
 
+onMounted(async () => {
+  console.log('App mounted');
+  await nextTick()
+  throw new Error('test error')
+});
 </script>
 <template>
   <NConfigProvider class="h-full w-[100vw] flex">

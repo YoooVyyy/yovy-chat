@@ -1,15 +1,14 @@
 import type { WindowNames } from '@common/types';
-
 import { IPC_EVENTS } from '@common/constants';
+import { debounce } from '@common/utils';
+import logManager from './log';
+import path from 'node:path';
 import {
 	BrowserWindow,
 	BrowserWindowConstructorOptions,
 	ipcMain, IpcMainInvokeEvent,
 	type IpcMainEvent
 } from 'electron';
-import { debounce } from '@common/utils';
-
-import path from 'node:path';
 
 interface SizeOptions {
   width: number; // 窗口宽度
@@ -37,6 +36,7 @@ class WindowService {
 
   private constructor() {
     this._setupIpcEvents();
+    logManager.info('WindowService initialized successfully.');
   }
 
   private _setupIpcEvents() {
@@ -66,6 +66,12 @@ class WindowService {
     return this._instance;
   }
 
+  /**
+   * 创建窗口
+   * @param name 窗口名字
+   * @param size 窗口大小
+   * @returns 窗口实例
+   */
   public create(name: WindowNames, size: SizeOptions) {
     const window = new BrowserWindow({
       ...SHARED_WINDOW_OPTIONS,
@@ -75,20 +81,35 @@ class WindowService {
     this
       ._setupWinLifecycle(window, name)
       ._loadWindowTemplate(window, name)
-
     return window;
   }
+
+  /**
+   * 设置窗口生命周期
+   * @param window 主进程实例
+   * @param name 窗口名字
+   * @returns 窗口实例
+   */
   private _setupWinLifecycle(window: BrowserWindow, name: WindowNames) {
-    const updateWinStatus = debounce(() => !window?.isDestroyed()
-      && window?.webContents?.send(IPC_EVENTS.MAXIMIZE_WINDOW + 'back', window?.isMaximized()), 80);
+    // 窗口状态更新
+    const updateWinStatus =
+      debounce(() => !window?.isDestroyed()
+        && window?.webContents?.send(IPC_EVENTS.MAXIMIZE_WINDOW + 'back', window?.isMaximized()), 80);
+    // 窗口销毁时取消监听
     window.once('closed', () => {
       window?.destroy();
       window?.removeListener('resize', updateWinStatus);
+      logManager.info(`Window ${name} destroyed.`);
     });
     window.on('resize', updateWinStatus)
     return this;
   }
 
+  /**
+   * 加载窗口模板
+   * @param window 
+   * @param name 窗口名字
+   */
   private _loadWindowTemplate(window: BrowserWindow, name: WindowNames) {
     if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
       return window.loadURL(`${MAIN_WINDOW_VITE_DEV_SERVER_URL}${'/html/' + (name === 'main' ? '' : name)}`);
@@ -105,9 +126,7 @@ class WindowService {
     if (!target) return;
     target.isMaximized() ? target.unmaximize() : target.maximize();
   }
-
 }
 
 export const windowManager = WindowService.getInstance();
-
 export default windowManager;

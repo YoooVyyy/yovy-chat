@@ -1,10 +1,19 @@
+import { setupWindow } from './windows';
+import logManager from './service/log';
 import { app, BrowserWindow } from 'electron';
 import started from 'electron-squirrel-startup';
-import { setupWindow } from './windows';
 
 if (started) {
   app.quit();
 }
+
+process.on('uncaughtException', (error) => {
+  logManager.error('Uncaught Exception:', error)
+})
+
+process.on('unhandledRejection', (reason, promise) => {
+  logManager.error('Unhandled Rejection:', reason, promise)
+})
 
 app.whenReady().then(() => {
   setupWindow();

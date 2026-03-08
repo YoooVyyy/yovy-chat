@@ -1,0 +1,152 @@
+import { IPC_EVENTS } from '@common/constants';
+import { promisify } from 'util';
+import { app, ipcMain } from 'electron';
+import log from 'electron-log';
+import * as path from 'path';
+import * as fs from 'fs';
+
+const readdirAsync = promisify(fs.readdir);
+const statAsync = promisify(fs.stat);
+const unlinkAsync = promisify(fs.unlink);
+
+class LogService {
+	private static _instance: LogService;
+
+	private readonly CLEAN_INTERVAL_MS = 24 * 60 * 60 * 1000; // 每24小时清理一次
+	private readonly LOG_RETENTION_DAYS = 7; // 日志保存天数
+
+	private constructor() {
+		// 创建日志(c\users\{username}\AppData\Roaming\{appname}\logs)
+		const logPath = path.join(app.getPath('userData'), 'logs')
+
+		try {
+			if (!fs.existsSync(logPath)) {
+				fs.mkdirSync(logPath, { recursive: true });
+			}
+		} catch (err) {
+			this.error('Failed to create log directory:', err);
+		}
+
+		// 配置electron-log
+    log.transports.file.resolvePathFn = () => {
+      // 使用当前日期作为日志文件名，格式为 YYYY-MM-DD.log
+      const today = new Date();
+			const formattedDate =
+				`${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+      return path.join(logPath, `${formattedDate}.log`);
+    };
+    // 配置日志格式
+    log.transports.file.format = '[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}] {text}';
+    // 配置日志文件大小限制，默认10MB
+    log.transports.file.maxSize = 10 * 1024 * 1024; // 10MB
+    // 配置控制台日志级别，开发环境可以设置为debug，生产环境可以设置为info
+    log.transports.console.level = process.env.NODE_ENV === 'development' ? 'debug' : 'info';
+    // 配置文件日志级别
+    log.transports.file.level = 'debug';
+
+    // 设置IPC事件
+    this._setupIpcEvents();
+    // 重写console方法
+    this._rewriteConsole();
+
+    this.info('LogService initialized successfully.');
+    this._cleanOldLogs();
+    // 定时清理旧日志
+    setInterval(() => this._cleanOldLogs(), this.CLEAN_INTERVAL_MS);
+	}
+
+	// 设置IPC事件
+	private _setupIpcEvents() {
+    ipcMain.on(IPC_EVENTS.LOG_DEBUG, (_e, message: string, ...meta: any[]) => this.debug(message, ...meta));
+    ipcMain.on(IPC_EVENTS.LOG_INFO, (_e, message: string, ...meta: any[]) => this.info(message, ...meta));
+    ipcMain.on(IPC_EVENTS.LOG_WARN, (_e, message: string, ...meta: any[]) => this.warn(message, ...meta));
+    ipcMain.on(IPC_EVENTS.LOG_ERROR, (_e, message: string, ...meta: any[]) => this.error(message, ...meta));
+  }
+
+	// 重写console方法
+  private _rewriteConsole() {
+    console.debug = log.debug;
+    console.log = log.info;
+    console.info = log.info;
+    console.warn = log.warn;
+    console.error = log.error;
+	}
+	
+	// 清理旧日志
+	private async _cleanOldLogs() {
+    try {
+      const logPath = path.join(app.getPath('userData'), 'logs');
+			if (!fs.existsSync(logPath)) return;
+			// 计算过期时间
+      const expirationDate = new Date(new Date().getTime() - this.LOG_RETENTION_DAYS * 24 * 60 * 60 * 1000);
+      const files = await readdirAsync(logPath);
+      let deletedCount = 0;
+      for (const file of files) {
+        if (!file.endsWith('.log')) continue;
+        const filePath = path.join(logPath, file);
+        try {
+          const stats = await statAsync(filePath);
+          if (stats.isFile() && (stats.birthtime < expirationDate)) {
+            await unlinkAsync(filePath);
+            deletedCount++;
+          }
+        } catch (err) {
+          this.error(`Failed to delete old log file ${filePath}:`, err);
+        }
+      }
+      if (deletedCount > 0) {
+        this.info(`Successfully cleaned ${deletedCount} old log files.`);
+      }
+
+    } catch (err) {
+      this.error('Failed to clean old logs:', err);
+    }
+  }
+
+	// 单例模式
+	public static getInstance(): LogService {
+		if (!this._instance) {
+			this._instance = new LogService();
+		}
+		return this._instance;
+	}
+
+	/**
+   * 记录调试信息
+   * @param {string} message - 日志消息
+   * @param {any[]} meta - 附加的元数据
+   */
+  public debug(message: string, ...meta: any[]): void {
+    log.debug(message, ...meta);
+  }
+
+  /**
+   * 记录一般信息
+   * @param {string} message - 日志消息
+   * @param {any[]} meta - 附加的元数据
+   */
+  public info(message: string, ...meta: any[]): void {
+    log.info(message, ...meta);
+  }
+
+  /**
+   * 记录警告信息
+   * @param {string} message - 日志消息
+   * @param {any[]} meta - 附加的元数据
+   */
+  public warn(message: string, ...meta: any[]): void {
+    log.warn(message, ...meta);
+  }
+
+  /**
+   * 记录错误信息
+   * @param {string} message - 日志消息
+   * @param {any[]} meta - 附加的元数据，通常是错误对象
+   */
+  public error(message: string, ...meta: any[]): void {
+    log.error(message, ...meta);
+  }
+}
+
+export const logManager = LogService.getInstance();
+export default logManager;
