@@ -1,0 +1,22 @@
+{
+	"files": [],
+	"references": [
+		{
+			"path": "./tsconfig.app.json"
+		},
+		{
+			"path": "./tsconfig.config.json"
+		}
+	],
+	"compilerOptions": {
+		"baseUrl": "./",
+		"ignoreDeprecations": "6.0",
+
+		"paths": {
+			"@common/*": ["./common/*"],
+			"@renderer/*": ["./renderer/*"],
+			"@main/*": ["./main/*"],
+			"@locales/*": ["./locales/*"],
+		}
+	}
+}
