@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { NConfigProvider } from 'naive-ui';
+import TitleBar from '@renderer/components/TitleBar.vue';
 
 </script>
 <template>
@@ -8,6 +9,7 @@ import { NConfigProvider } from 'naive-ui';
       Aside
     </aside>
     <div class="flex-auto">
+      <TitleBar title="Yovy Chat" />
       Main
     </div>
   </NConfigProvider>
