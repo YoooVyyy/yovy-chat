@@ -9,7 +9,7 @@ const iconMap = new Map([
  * @returns { themeMode, isDark, setThemeMode, getThemeMode, onThemeChange }
  */
 export function useThemeMode() {
-	const themeMode = ref<ThemeMode>('light');
+	const themeMode = ref<ThemeMode>('dark');
 	const isDark = ref<boolean>(false)
 	const themeIcon = computed(() => iconMap.get(themeMode.value)
 		|| 'material-symbols:auto-awesome-outline')
@@ -24,21 +24,19 @@ export function useThemeMode() {
 		return themeMode.value;
 	}
 
+	// 监听主题模式变化
 	function onThemeChange(cb: (mode: ThemeMode) => void) {
 		themeChangeCallBacks.push(cb);
 	}
 
 	onMounted(async () => {
-		// window.api.isDarkTheme().then((res) => {
-		// 	isDark.value = res;
-		// })
-		window.api.onSystemThemeChange((_isDark: boolean) => {
+		window.api.onSystemThemeChange((_isDark: boolean) =>
 			window.api.getThemeMode().then((res) => {
 				isDark.value = _isDark;
-				if(res !== themeMode.value) themeMode.value = res;
+				if (res !== themeMode.value) themeMode.value = res;
 				themeChangeCallBacks.forEach((cb) => cb(res));
-			})
-		})
+			}))
+		isDark.value = await window.api.isDarkTheme();
 		themeMode.value = await window.api.getThemeMode();
 	})
 

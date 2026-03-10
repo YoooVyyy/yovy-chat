@@ -4,18 +4,18 @@ export enum IPC_EVENTS {
 	MINIMIZE_WINDOW = 'minimize-window',
 	CLOSE_WINDOW = 'close-window',
 	IS_WINDOW_MAXIMIZED = 'is-window-maximized',
-
-	// main to render
 	SET_THEME_MODE = 'set-theme-mode',
 	GET_THEME_MODE = 'get-theme-mode',
 	IS_DARK_THEME = 'is-dark-mode',
-	THEME_MODE_UPDATED = 'theme-mode-update',
 
+	// main to render
+	THEME_MODE_UPDATED = 'theme-mode-updated',
+
+	// log
 	LOG_DEBUG = 'log-debug',
 	LOG_INFO = 'log-info',
 	LOG_WARN = 'log-warn',
 	LOG_ERROR = 'log-error',
-	LOG_FATAL = 'log-fatal',
 }
 
 export enum WINDOW_NAMES { 

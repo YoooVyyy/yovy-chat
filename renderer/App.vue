@@ -23,8 +23,7 @@ onMounted(async () => {
     </aside>
     <div class="flex-auto">
       <TitleBar title="Yovy Chat">
-        <DragWindow class="w-full">
-        </DragWindow>
+        <DragWindow class="w-full" />
       </TitleBar>
       Main
     </div>
