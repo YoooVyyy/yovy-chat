@@ -10,8 +10,8 @@ onMounted(async () => {
 });
 </script>
 <template>
-  <NConfigProvider class="h-full w-[100vw] flex">
-    <aside class="h-full flex flex-shrink-0 flex-col bg-amber-600">
+  <NConfigProvider class="h-full w-[100vw] flex text-tx-primary">
+    <aside class="sidebar h-full w-[200px] flex flex-shrink-0 flex-col">
       Aside
     </aside>
     <div class="flex-auto">
@@ -23,3 +23,10 @@ onMounted(async () => {
     </div>
   </NConfigProvider>
 </template>
+
+<style scoped>
+.sidebar {
+  background-color: var(--bg-color);
+  box-shadow: -3px -2px 10px rgba(101, 101, 101, 0.2);
+}
+</style>

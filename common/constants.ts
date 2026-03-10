@@ -1,8 +1,15 @@
 export enum IPC_EVENTS {
+	// render to main
 	MAXIMIZE_WINDOW = 'maximize-window',
 	MINIMIZE_WINDOW = 'minimize-window',
 	CLOSE_WINDOW = 'close-window',
 	IS_WINDOW_MAXIMIZED = 'is-window-maximized',
+
+	// main to render
+	SET_THEME_MODE = 'set-theme-mode',
+	GET_THEME_MODE = 'get-theme-mode',
+	IS_DARK_THEME = 'is-dark-mode',
+	THEME_MODE_UPDATED = 'theme-mode-update',
 
 	LOG_DEBUG = 'log-debug',
 	LOG_INFO = 'log-info',
@@ -13,7 +20,7 @@ export enum IPC_EVENTS {
 
 export enum WINDOW_NAMES { 
 	MAIN = 'main',
-	SETTING = 'steeing',
+	SETTING = 'setting',
 	DIALOG = 'dialog',
 }
 

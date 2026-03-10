@@ -4,6 +4,11 @@ interface WindowApi {
 	minimizeWindow: () => void;
 	isWindowMaximized: () => Promise<boolean>;
 	onWindowMaximized: (cb: (isMaximized: boolean) => void) => void;
+	
+	setThemeMode: (mode: ThemeMode) => Promise<boolean>;
+	getThemeMode: () => Promise<ThemeMode>;
+	isDarkTheme: () => Promise<boolean>;
+	onSystemThemeChange: (cb: (isDark: boolean) => void) => void;
 
 	logger: {
 		debug: (message: string, ...meta?: any[]) => void;
@@ -12,6 +17,8 @@ interface WindowApi {
 		warn: (message: string, ...meta?: any[]) => void;
 	}
 }
+
+type ThemeMode = 'light' | 'dark' | 'system';
 
 declare interface Window {
 	api: WindowApi;

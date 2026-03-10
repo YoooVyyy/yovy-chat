@@ -3,10 +3,15 @@ import { IPC_EVENTS } from '@common/constants';
 
 const api: WindowApi = {
 	closeWindow: () => ipcRenderer.send(IPC_EVENTS.CLOSE_WINDOW),
-	minimizeWindow: () => ipcRenderer.send(IPC_EVENTS.MINIMIZE_WINDOW),
-	maximizeWindow: () => ipcRenderer.send(IPC_EVENTS.MAXIMIZE_WINDOW),
+	maximizeWindow: () => ipcRenderer.send(IPC_EVENTS.MINIMIZE_WINDOW),
+	minimizeWindow: () => ipcRenderer.send(IPC_EVENTS.MAXIMIZE_WINDOW),
 	isWindowMaximized: () => ipcRenderer.invoke(IPC_EVENTS.IS_WINDOW_MAXIMIZED),
 	onWindowMaximized: (cb: (isMaximized: boolean) => void) => ipcRenderer.on(IPC_EVENTS.MAXIMIZE_WINDOW + 'back', (_, isMaximized) => cb(isMaximized)),
+
+	setThemeMode: (mode: ThemeMode) => ipcRenderer.invoke(IPC_EVENTS.SET_THEME_MODE, mode),
+	getThemeMode: () => ipcRenderer.invoke(IPC_EVENTS.GET_THEME_MODE),
+	isDarkTheme: () => ipcRenderer.invoke(IPC_EVENTS.IS_DARK_THEME),
+	onSystemThemeChange: (cb: (isDark: boolean) => void) => ipcRenderer.on(IPC_EVENTS.THEME_MODE_UPDATED + 'back', (_, isDark) => cb(isDark)),
 
 	logger: {
 		debug: (message: string, ...meta: any[]) => ipcRenderer.send(IPC_EVENTS.LOG_DEBUG, message, ...meta),
