@@ -9,5 +9,5 @@ import i18n from '@locales/index';
 
 createApp(App)
 	.use(errorHandler)
-	.use(await i18n)
+	.use(i18n)
 	.mount('#app');
