@@ -1,5 +1,7 @@
 {
 	"i18n-ally.localesPaths": [
-		"locales"
-	]
+		"../locales/language"
+	],
+	"i18n-ally.displayLanguage": "zh-CN",
+	"i18n-ally.keystyle": "nested",
 }

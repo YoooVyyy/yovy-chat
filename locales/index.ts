@@ -19,12 +19,12 @@ async function createI18nInstance() {
 
 export async function setLanguage(lang: LanguageType, _i18n?: I18n) {
   const __i18n = _i18n ?? i18n
-  __i18n.global.locale = lang
-  // if (__i18n.mode === 'legacy') {
-  //   __i18n.global.locale = lang
-  //   return;
-  // }
-  // (__i18n.global as unknown as Ref<LanguageType>).value = lang
+  // __i18n.global.locale = lang
+  if (__i18n.mode === 'legacy') {
+    __i18n.global.locale = lang
+    return;
+  }
+  (__i18n.global as unknown as Ref<LanguageType>).value = lang
 }
 
 export async function getLanguage() {
