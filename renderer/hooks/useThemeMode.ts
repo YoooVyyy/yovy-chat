@@ -5,9 +5,9 @@ const iconMap = new Map([
 ])
 
 const tooltipMap = new Map([
-  ['system', 'setting.theme.system'],
-  ['light', 'setting.theme.light'],
-  ['dark', 'setting.theme.dark'],
+  ['system', 'settings.theme.system'],
+  ['light', 'settings.theme.light'],
+  ['dark', 'settings.theme.dark'],
 ])
 
 /**
@@ -21,7 +21,7 @@ export function useThemeMode() {
 	const themeIcon = computed(() => iconMap.get(themeMode.value)
 		|| 'material-symbols:auto-awesome-outline')
 	const themeTooltip = computed(() => t(tooltipMap.get(themeMode.value) as string)
-		|| 'setting.theme.system')
+		|| 'settings.theme.system')
 	const themeChangeCallBacks: Array<(mode: ThemeMode) => void> = [];
 
 	function setThemeMode(mode: ThemeMode) {
