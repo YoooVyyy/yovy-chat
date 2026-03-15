@@ -3,17 +3,20 @@ import { NConfigProvider } from 'naive-ui';
 import TitleBar from '@renderer/components/TitleBar.vue';
 import DragWindow from '@renderer/components/DragWindow.vue';
 import NaviBar from '@renderer/components/NaviBar.vue';
+import Resize from '@renderer/components/Resize.vue';
 
 onMounted(async () => {
   console.log('App mounted');
   await nextTick()
   throw new Error('test error')
 });
+
+const sidebarWidth = ref(320);
 </script>
 
 <template>
   <NConfigProvider class="h-full w-[100vw] flex text-tx-primary">
-    <aside class="sidebar h-full w-[320px] flex flex-shrink-0 flex-col">
+    <aside class="sidebar h-full flex flex-shrink-0 flex-col" :style="{ width: sidebarWidth + 'px' }">
       <div class="flex-auto flex">
         <NaviBar />
         <div class="flex-auto">
@@ -21,6 +24,12 @@ onMounted(async () => {
         </div>
       </div>
     </aside>
+    <Resize
+      direction="vertical"
+      v-model:size="sidebarWidth"
+      :max-size="800"
+      :min-size="320"
+    />
     <div class="flex-auto">
       <TitleBar title="Yovy Chat">
         <DragWindow class="w-full" />
