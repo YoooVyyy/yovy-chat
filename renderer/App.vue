@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { NConfigProvider } from 'naive-ui';
-import TitleBar from '@renderer/components/TitleBar.vue';
-import DragWindow from '@renderer/components/DragWindow.vue';
 import NaviBar from '@renderer/components/NaviBar.vue';
 import Resize from '@renderer/components/Resize.vue';
+import ConversationList from '@renderer/components/ConversationList/index.vue';
 
 onMounted(async () => {
   console.log('App mounted');
@@ -19,9 +18,7 @@ const sidebarWidth = ref(320);
     <aside class="sidebar h-full flex flex-shrink-0 flex-col" :style="{ width: sidebarWidth + 'px' }">
       <div class="flex-auto flex">
         <NaviBar />
-        <div class="flex-auto">
-          conversation-list
-        </div>
+        <ConversationList class="flex-auto" :width="sidebarWidth" />
       </div>
     </aside>
     <Resize
@@ -31,9 +28,7 @@ const sidebarWidth = ref(320);
       :min-size="320"
     />
     <div class="flex-auto">
-      <TitleBar title="Yovy Chat">
-        <DragWindow class="w-full" />
-      </TitleBar>
+      <router-view></router-view>
       Main
     </div>
   </NConfigProvider>
