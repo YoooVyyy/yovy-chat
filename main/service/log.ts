@@ -146,6 +146,16 @@ class LogService {
   public error(message: string, ...meta: any[]): void {
     log.error(message, ...meta);
   }
+
+  /**
+   * 记录用户操作日志
+   * @param {string} operation - 操作名称
+   * @param {string} [userId] - 用户ID，默认为'unknown'
+   * @param {any} [details] - 操作详情，默认为空对象
+   */
+  public logUserOperation(operation: string, userId: string = 'unknown', details: any = {}): void {
+    this.info(`User Operation: ${operation} by ${userId}, Details: ${JSON.stringify(details)}`)
+  }
 }
 
 export const logManager = LogService.getInstance();

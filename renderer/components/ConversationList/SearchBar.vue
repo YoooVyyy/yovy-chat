@@ -2,7 +2,7 @@
 import { NInput, NInputGroup, NInputGroupLabel, NIcon } from 'naive-ui';
 import { Icon as IconifyIcon } from '@iconify/vue';
 
-import { useFilter } from './utils';
+import { useFilter, useContextMenu } from './utils';
 
 defineOptions({
   name: 'SearchBar'
@@ -10,6 +10,7 @@ defineOptions({
 
 const { t } = useI18n();
 const { searchKey } = useFilter();
+const { handle: handleSearchBarContextMenu } = useContextMenu();
 </script>
 
 <template>
@@ -25,7 +26,7 @@ const { searchKey } = useFilter();
 					<IconifyIcon icon="material-symbols:search" />
 				</template>
 			</NInput>
-			<NInputGroupLabel class="cursor-pointer flex justify-between items-center">
+			<NInputGroupLabel class="cursor-pointer flex justify-between items-center" @click="handleSearchBarContextMenu()">
 				<NIcon>
 					<iconify-icon icon="material-symbols:menu" />
 				</NIcon>

@@ -18,3 +18,40 @@ export function throttle<T extends (...args: any[]) => any>(fn: T, delay: number
     }
   };
 }
+
+/**
+ * 浅拷贝对象
+ * @param obj
+ * @returns
+ */
+export function deepClone<T>(obj: T): T {
+  if (obj === null || typeof obj !== 'object') {
+    return obj;
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map(item => deepClone(item)) as T;
+  }
+
+  const clone = Object.assign({}, obj);
+  for (const key in clone) {
+    if (Object.prototype.hasOwnProperty.call(clone, key)) {
+      clone[key] = deepClone(clone[key]);
+    }
+  }
+  return clone;
+}
+
+/**
+ * 简单浅拷贝对象
+ * @param obj
+ * @returns
+ */
+export function simpleDeepClone<T>(obj: T): T {
+  try {
+    return JSON.parse(JSON.stringify(obj));
+  } catch (error) {
+    console.error('simpleDeepClone failed:', error);
+    return obj;
+  }
+}
