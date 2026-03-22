@@ -1,10 +1,11 @@
 import logManager from './log';
 import { IPC_EVENTS } from '@common/constants';
 import { deepClone } from '@common/utils';
-import { createTranslator } from '@main/utils/index';
+import { createTranslator } from '@main/utils/translator';
 
 import { ipcMain, Menu, type MenuItemConstructorOptions } from 'electron';
 
+// 翻译contextMenu每一项的label
 let t: ReturnType<typeof createTranslator> = createTranslator();
 
 Menu.buildFromTemplate([])
@@ -57,11 +58,12 @@ class MenuService {
 	 * 显示菜单(若当前菜单已存在，则不执行)
 	 * @param menuId 菜单ID(不同的菜单等级不同)
 	 * @param onClose 菜单关闭回调
-	 * @param dynamicOptions 动态参数
+	 * @param dynamicOptions 菜单选项
 	 */
 	public showMenu(menuId: string, onClose?: () => void, dynamicOptions?: string) {
 		if (this._currentMenu) return;
 
+		// 获取_menuTemplates中对应的contextMenu的每一项内容
 		const template = deepClone(this._menuTemplates.get(menuId))
 		if (!template) {
 			logManager.warn(`MenuService: Menu ${menuId} not found`)
@@ -69,9 +71,7 @@ class MenuService {
 			return;
 		}
 
-		let _dynamicOptions: Array<Partial<MenuItemConstructorOptions> & {
-			id: string;
-		}> = [];
+		let _dynamicOptions: Array<Partial<MenuItemConstructorOptions> & { id: string }> = [];
 		try {
 			_dynamicOptions = Array.isArray(dynamicOptions) ? dynamicOptions : JSON.parse(dynamicOptions ?? '[]');
 		} catch (error) {
@@ -97,8 +97,10 @@ class MenuService {
 			}
 		}
 
-		// 翻译菜单项的内容
+		// 初始化菜单
+		// 遍历当前contextMenu的每一项内容
 		const localizedTemplate = template.map(item => {
+			// _dynamicOptions不是数组，或者是数组但长度为0
 			if (!Array.isArray(_dynamicOptions) || !_dynamicOptions.length) {
 				return translationItem(item)
 			}

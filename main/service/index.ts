@@ -30,7 +30,7 @@ interface SizeOptions {
 
 const SHARED_WINDOW_OPTIONS = {
   titleBarStyle: 'hidden',
-  title: 'Yovy',
+  title: 'YovyChat',
   darkTheme: themeControler.isDark,
   backgroundColor: themeControler.isDark ? '#2C2C2C' : '#FFFFFF',
   webPreferences: {
@@ -86,7 +86,7 @@ class WindowService {
   }
 
   /**
-   * 创建窗口
+   * 创建子窗口
    * @param name 窗口名字
    * @param size 窗口大小
    * @returns 窗口实例

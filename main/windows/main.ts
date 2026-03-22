@@ -11,6 +11,7 @@ import { logManager } from '../service/log';
 
 import type { BrowserWindow } from 'electron';
 
+// 在窗口创建时注册菜单
 const registerMenus = (window: BrowserWindow) => {
   // 当菜单项被点击时，发送IPC消息给渲染进程
   const conversationItemMenuItemClick = (id: string) => {

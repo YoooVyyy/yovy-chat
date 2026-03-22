@@ -15,6 +15,7 @@ process.on('unhandledRejection', (reason, promise) => {
   logManager.error('Unhandled Rejection:', reason, promise)
 })
 
+// fulfilled when Electron is initialized
 app.whenReady().then(() => {
   setupWindow();
 

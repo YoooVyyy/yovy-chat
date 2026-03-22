@@ -26,4 +26,5 @@ const api: WindowApi = {
 	}
 }
 
+// 将api暴露给Rerenderer
 contextBridge.exposeInMainWorld('api', api);
