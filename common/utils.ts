@@ -1,3 +1,7 @@
+import { encode, decode } from 'js-base64';
+
+import type { openAISetting } from './types';
+
 export function debounce<T extends (...args: any[]) => any>(fn: T, delay: number) {
   let timeoutId: ReturnType<typeof setTimeout> | null = null;
   return function (this: any, ...args: Parameters<T>) {
@@ -53,5 +57,24 @@ export function simpleDeepClone<T>(obj: T): T {
   } catch (error) {
     console.error('simpleDeepClone failed:', error);
     return obj;
+  }
+}
+
+// 以base64的格式存在数据库中
+export function stringifyOpenAISetting(setting: openAISetting) {
+  try {
+    return encode(JSON.stringify(setting))
+  } catch (error) {
+    console.error('stringifyOpenAISetting failed:', error);
+    return '';
+  }
+}
+
+export function parseOpenAISetting(setting: string): openAISetting {
+  try {
+    return JSON.parse(decode(setting))
+  } catch (error) {
+    console.error('parseOpenAISetting failed:', error);
+    return {} as openAISetting;
   }
 }

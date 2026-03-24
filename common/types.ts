@@ -2,6 +2,19 @@ import { WINDOW_NAMES } from './constants';
 
 export type WindowNames = `${WINDOW_NAMES}`
 
+// 模型供应商
+export interface Provider {
+	id: number;
+	name: string;
+	visible?: boolean;
+	title?: string;
+	type?: 'AiChat';
+	openAISetting?: string;
+	createdAt: number;
+	updatedAt: number;
+	models: string[];
+}
+
 export interface Conversation {
 	id: number;
 	title: string;
@@ -23,4 +36,9 @@ export interface Message {
 	updatedAt?: number;
 	status?: MessageStatus;
 	conversationId: number;
+}
+
+export interface openAISetting {
+	baseURL?: string;
+	apiKey?: string;
 }
